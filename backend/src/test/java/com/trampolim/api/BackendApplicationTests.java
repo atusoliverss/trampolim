@@ -1,4 +1,4 @@
-package com.trampolim.backend;
+package com.trampolim.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
