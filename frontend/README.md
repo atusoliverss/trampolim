@@ -1,32 +1,28 @@
-# React + TypeScript + Vite
+# Front-end Trampolim
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+## Configuração das APIs
 
-Currently, two official plugins are available:
+Copie `.env.example` para `.env.local` e preencha as URLs fornecidas pelos serviços de autenticação, cursos e vagas. As rotas locais são o padrão para desenvolvimento.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```env
+VITE_AUTH_API_URL=http://localhost:8080
+VITE_COURSES_API_URL=https://api-de-cursos.exemplo/cursos
+VITE_JOBS_API_URL=https://api-de-vagas.exemplo/vagas
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+O login e o cadastro aceitam respostas com `token`, `accessToken`, `access_token` ou `jwt`. A página inicial e o questionário são públicos: a pessoa entra ou cria uma conta somente quando conclui o diagnóstico e pede para ver seus resultados. Todas as requisições de cursos e vagas recebem automaticamente `Authorization: Bearer <token>`.
+
+## Executar
+
+```bash
+npm install
+npm run dev
+```
+
+Para validar a produção:
+
+```bash
+npm run build
+```
+
+Em respostas de autenticação inválida, expirada, 401 ou 403, a sessão é removida e a interface retorna ao login. Falhas de conexão, timeout e indisponibilidade do serviço são mostradas na própria tela.

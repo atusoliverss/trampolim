@@ -12,13 +12,14 @@ export function Header() {
       <nav className="hidden md:flex items-center">
         <a href="#como-funciona" className="text-ink no-underline font-semibold text-[14px] ml-7">Como funciona</a>
         <a href="#diagnostico" className="text-ink no-underline font-semibold text-[14px] ml-7">Diagnóstico</a>
+        {isAuthenticated && <a href="#cursos" className="text-ink no-underline font-semibold text-[14px] ml-7">Cursos</a>}
         <a href="#vagas" className="text-ink no-underline font-semibold text-[14px] ml-7">Vagas</a>
         
         <div className="ml-10 flex items-center gap-4 border-l border-gray-200 pl-6">
           {isAuthenticated ? (
             <button 
               onClick={logout}
-              className="text-gray-600 hover:text-gray-900 font-semibold text-[14px]"
+              className="text-gray-600 hover:text-gray-900 font-semibold text-[14px] cursor-pointer"
             >
               Sair
             </button>
@@ -34,6 +35,11 @@ export function Header() {
           )}
         </div>
       </nav>
+      {isAuthenticated && (
+        <button onClick={logout} className="md:hidden text-ink font-semibold text-[14px] cursor-pointer border-0 bg-transparent">
+          Sair
+        </button>
+      )}
     </header>
   );
 }
