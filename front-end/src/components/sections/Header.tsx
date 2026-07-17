@@ -1,5 +1,0 @@
-interface HeaderProps { authenticated: boolean; onLogout: () => void; }
-
-export function Header({ authenticated, onLogout }: HeaderProps) {
-  return <header className="px-[6vw] py-5 flex justify-between items-center"><div className="font-serif font-black text-[22px] tracking-[-0.5px]">Trampol<span className="text-brand-red">i</span>m</div><nav className="hidden md:block"><a href="#como-funciona" className="text-ink no-underline font-semibold text-[14px] ml-7">Como funciona</a><a href="#diagnostico" className="text-ink no-underline font-semibold text-[14px] ml-7">Diagnóstico</a>{authenticated && <><a href="#cursos" className="text-ink no-underline font-semibold text-[14px] ml-7">Cursos</a><a href="#vagas" className="text-ink no-underline font-semibold text-[14px] ml-7">Vagas</a><button onClick={onLogout} className="text-ink font-semibold text-[14px] ml-7 cursor-pointer border-0 bg-transparent">Sair</button></>}</nav>{authenticated && <button onClick={onLogout} className="md:hidden text-ink font-semibold text-[14px] cursor-pointer border-0 bg-transparent">Sair</button>}</header>;
-}
