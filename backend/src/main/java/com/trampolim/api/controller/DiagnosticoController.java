@@ -2,9 +2,9 @@ package com.trampolim.api.controller;
 
 import com.trampolim.api.controller.dto.DiagnosticoRequestDTO;
 import com.trampolim.api.controller.dto.DiagnosticoResponseDTO;
-import com.trampolim.api.domain.diagnostico.Diagnostico;
-import com.trampolim.api.domain.diagnostico.DiagnosticoRepository;
-import com.trampolim.api.domain.usuario.UsuarioRepository;
+import com.trampolim.api.modules.core.diagnostico.model.Diagnostico;
+import com.trampolim.api.modules.core.diagnostico.repository.DiagnosticoRepository;
+import com.trampolim.api.modules.core.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,8 +33,9 @@ public class DiagnosticoController {
         String perfil = determinarPerfil(dto);
 
         Diagnostico diagnostico = new Diagnostico();
-        diagnostico.setPerfil(perfil);
-        diagnostico.setAlternativasProcessadas(String.join(",", dto.alternativasMarcadas()));
+        diagnostico.setLocalizacao("Remoto"); // Preenchimento default
+        diagnostico.setDisponibilidadeTempo("INTEGRAL"); // Preenchimento default
+        diagnostico.setHabilidades(dto.alternativasMarcadas());
         diagnostico.setUsuario(usuario);
 
         diagnosticoRepository.save(diagnostico);

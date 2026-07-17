@@ -3,8 +3,8 @@ package com.trampolim.api.controller;
 import com.trampolim.api.controller.dto.CadastroDTO;
 import com.trampolim.api.controller.dto.LoginDTO;
 import com.trampolim.api.controller.dto.TokenResponseDTO;
-import com.trampolim.api.domain.usuario.Usuario;
-import com.trampolim.api.domain.usuario.UsuarioRepository;
+import com.trampolim.api.modules.core.usuario.model.Usuario;
+import com.trampolim.api.modules.core.usuario.repository.UsuarioRepository;
 import com.trampolim.api.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,7 @@ public class AuthController {
         }
 
         Usuario novoUsuario = new Usuario();
-        novoUsuario.setNome(dto.nome());
+        novoUsuario.setRole("USER");
         novoUsuario.setEmail(dto.email());
         novoUsuario.setSenha(passwordEncoder.encode(dto.senha()));
 
