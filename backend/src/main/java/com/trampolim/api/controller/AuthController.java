@@ -3,6 +3,7 @@ package com.trampolim.api.controller;
 import com.trampolim.api.controller.dto.CadastroDTO;
 import com.trampolim.api.controller.dto.LoginDTO;
 import com.trampolim.api.controller.dto.TokenResponseDTO;
+import com.trampolim.api.controller.dto.ErrorResponseDTO;
 import com.trampolim.api.modules.core.usuario.model.Usuario;
 import com.trampolim.api.modules.core.usuario.repository.UsuarioRepository;
 import com.trampolim.api.security.JwtUtil;
@@ -23,11 +24,12 @@ public class AuthController {
     @PostMapping("/cadastro")
     public ResponseEntity<?> cadastrar(@RequestBody CadastroDTO dto) {
         if (usuarioRepository.findByEmail(dto.email()).isPresent()) {
-            return ResponseEntity.badRequest().body("Email já cadastrado");
+            return ResponseEntity.badRequest().body(new ErrorResponseDTO("Email já cadastrado"));
         }
 
         Usuario novoUsuario = new Usuario();
         novoUsuario.setRole("USER");
+        novoUsuario.setNome(dto.nome());
         novoUsuario.setEmail(dto.email());
         novoUsuario.setSenha(passwordEncoder.encode(dto.senha()));
 
@@ -41,7 +43,7 @@ public class AuthController {
         var usuarioOptional = usuarioRepository.findByEmail(dto.email());
 
         if (usuarioOptional.isEmpty()) {
-            return ResponseEntity.status(401).body("Credenciais inválidas");
+            return ResponseEntity.status(401).body(new ErrorResponseDTO("Credenciais inválidas"));
         }
 
         var usuario = usuarioOptional.get();
@@ -50,6 +52,6 @@ public class AuthController {
             return ResponseEntity.ok(new TokenResponseDTO(token));
         }
 
-        return ResponseEntity.status(401).body("Credenciais inválidas");
+        return ResponseEntity.status(401).body(new ErrorResponseDTO("Credenciais inválidas"));
     }
 }

@@ -1,6 +1,6 @@
-@import "tailwindcss";
-
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;900&family=Manrope:wght@400;600;800&display=swap');
+
+@import "tailwindcss";
 
 @theme {
   --color-ink: #182642;

@@ -1,11 +1,13 @@
 package com.trampolim.api.security;
 
+import com.trampolim.api.modules.core.usuario.repository.UsuarioRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -17,6 +19,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
+    private final UsuarioRepository usuarioRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -25,9 +28,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             var subject = jwtUtil.validateToken(token);
 
             if (!subject.isEmpty()) {
-                // Como ainda não temos User/UserDetails no banco, mockamos um usuário autenticado vazio mas com o email/username
-                var authentication = new UsernamePasswordAuthenticationToken(subject, null, Collections.emptyList());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                var usuario = usuarioRepository.findByEmail(subject);
+                if (usuario.isPresent()) {
+                    var role = usuario.get().getRole() != null ? usuario.get().getRole() : "USER";
+                    var authentication = new UsernamePasswordAuthenticationToken(
+                            subject, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role)));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
         }
         filterChain.doFilter(request, response);

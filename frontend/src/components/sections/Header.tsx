@@ -1,7 +1,11 @@
-import { Link } from 'react-router-dom';
-import { useAuth } from '../../features/auth/AuthContext';
+import { useAuth } from "../../features/auth/useAuth";
 
-export function Header() {
+interface HeaderProps {
+  onOpenLogin?: () => void;
+  onOpenRegister?: () => void;
+}
+
+export function Header({ onOpenLogin, onOpenRegister }: HeaderProps) {
   const { isAuthenticated, logout } = useAuth();
 
   return (
@@ -10,30 +14,67 @@ export function Header() {
         Trampol<span className="text-brand-red">i</span>m
       </div>
       <nav className="hidden md:flex items-center">
-        <a href="#como-funciona" className="text-ink no-underline font-semibold text-[14px] ml-7">Como funciona</a>
-        <a href="#diagnostico" className="text-ink no-underline font-semibold text-[14px] ml-7">Diagnóstico</a>
-        <a href="#vagas" className="text-ink no-underline font-semibold text-[14px] ml-7">Vagas</a>
-        
+        <a
+          href="#como-funciona"
+          className="text-ink no-underline font-semibold text-[14px] ml-7"
+        >
+          Como funciona
+        </a>
+        <a
+          href="#diagnostico"
+          className="text-ink no-underline font-semibold text-[14px] ml-7"
+        >
+          Diagnóstico
+        </a>
+        {isAuthenticated && (
+          <a
+            href="#cursos"
+            className="text-ink no-underline font-semibold text-[14px] ml-7"
+          >
+            Cursos
+          </a>
+        )}
+        <a
+          href="#vagas"
+          className="text-ink no-underline font-semibold text-[14px] ml-7"
+        >
+          Vagas
+        </a>
+
         <div className="ml-10 flex items-center gap-4 border-l border-gray-200 pl-6">
           {isAuthenticated ? (
-            <button 
+            <button
               onClick={logout}
-              className="text-gray-600 hover:text-gray-900 font-semibold text-[14px]"
+              className="text-gray-600 hover:text-gray-900 font-semibold text-[14px] cursor-pointer"
             >
               Sair
             </button>
           ) : (
             <>
-              <Link to="/login" className="text-ink no-underline font-semibold text-[14px]">
+              <button
+                onClick={onOpenLogin}
+                className="text-ink no-underline font-semibold text-[14px] cursor-pointer bg-transparent border-none p-0"
+              >
                 Entrar
-              </Link>
-              <Link to="/cadastro" className="bg-brand-red text-white px-4 py-2 rounded-full font-semibold text-[14px] hover:bg-red-600 transition-colors">
+              </button>
+              <button
+                onClick={onOpenRegister}
+                className="bg-brand-red text-white px-4 py-2 rounded-full font-semibold text-[14px] hover:bg-red-600 transition-colors cursor-pointer border-none"
+              >
                 Cadastre-se
-              </Link>
+              </button>
             </>
           )}
         </div>
       </nav>
+      {isAuthenticated && (
+        <button
+          onClick={logout}
+          className="md:hidden text-ink font-semibold text-[14px] cursor-pointer border-0 bg-transparent"
+        >
+          Sair
+        </button>
+      )}
     </header>
   );
 }

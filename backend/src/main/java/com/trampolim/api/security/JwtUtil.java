@@ -14,8 +14,7 @@ import java.time.ZoneOffset;
 @Service
 public class JwtUtil {
 
-    // Idealmente deve vir do application.properties
-    @Value("${api.security.token.secret:TRAMPOLIM_SECRET_KEY_123}")
+    @Value("${api.security.token.secret}")
     private String secret;
 
     public String generateToken(String username) {
