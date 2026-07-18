@@ -1,15 +1,18 @@
 # Trampolim 🚀
 
-O Trampolim é um projeto inovador focado em conectar jovens a cursos de capacitação gratuitos (Sebrae, Senai, etc.) e cruzar o perfil com vagas de empresas locais usando "Match". 
+O Trampolim é um projeto inovador focado em conectar jovens a cursos de capacitação gratuitos (Sebrae, Senai, etc.) e cruzar o perfil com vagas de empresas locais usando "Match".
 
 O projeto adota uma arquitetura em **monólito de repositório (monorepo)**, sendo dividido em:
+
 - **`frontend/`**: React + Vite + Tailwind CSS v4 + TypeScript.
 - **`backend/`**: Java 21 + Spring Boot + Spring Security (JWT) + PostgreSQL.
 
 ---
 
 ## 🛠 Pré-requisitos
+
 Para rodar este projeto na sua máquina, você precisa ter instalado:
+
 - **Node.js** (versão 18+ recomendada) e **NPM**.
 - **Java JDK 21**.
 - **Docker** e **Docker Compose** (para subir o banco de dados facilmente).
@@ -20,60 +23,52 @@ Para rodar este projeto na sua máquina, você precisa ter instalado:
 
 Siga o passo a passo abaixo estritamente nessa ordem para garantir que a aplicação inicie sem erros:
 
-### 1. Subir o Banco de Dados (PostgreSQL via Docker)
-O backend exige um banco de dados rodando para iniciar corretamente. Usamos o Docker para facilitar isso.
+### 1. Configurar Variáveis de Ambiente
 
-1. Abra um terminal na raiz do projeto.
-2. Navegue até a pasta do backend:
-   ```bash
-   cd backend
-   ```
-3. Suba o container do banco de dados em background:
-   ```bash
-   docker compose up -d
-   ```
-   *Dica: Se quiser acompanhar os logs do banco em tempo real, use `docker compose logs -f`.*
-   
-   *Nota: O banco subirá na porta `5432` com as credenciais padrões (`root` / `root`) definidas no arquivo `docker-compose.yml` e esperadas pelo `application.properties`.*
+Antes de subir o projeto, crie um arquivo `.env` na raiz do projeto contendo as variáveis necessárias. Você pode usar o arquivo de exemplo como base:
 
-### 2. Rodar o Backend (API Spring Boot)
-Com o banco rodando, podemos iniciar a API. 
-*(Ainda no terminal, dentro da pasta `backend/`)*
+```bash
+cp .env.example .env
+```
 
-- Se você estiver no **Linux/macOS**:
-  ```bash
-  ./mvnw spring-boot:run
-  ```
-- Se você estiver no **Windows**:
-  ```bash
-  mvnw.cmd spring-boot:run
-  ```
-*O backend estará rodando em `http://localhost:8080`. Todas as rotas (exceto `/api/auth/login` e `/api/auth/cadastro`) estão protegidas e exigem um Token JWT no cabeçalho `Authorization`.*
+### 2. Rodar Tudo com Docker Compose (Recomendado)
 
-### 3. Rodar o Frontend (React / Vite)
-Por fim, abra **uma nova aba/janela no terminal** e inicie a interface do usuário.
+Para iniciar o Banco de Dados, o Backend e o Frontend de uma vez só, abra o terminal na **pasta raiz do projeto** e execute:
 
-1. Navegue até a pasta do frontend:
-   ```bash
-   cd frontend
-   ```
-2. Instale as dependências na primeira vez:
-   ```bash
-   npm install
-   ```
-3. Inicie o servidor de desenvolvimento:
-   ```bash
-   npm run dev
-   ```
-*O frontend abrirá automaticamente no seu navegador em `http://localhost:5173`. O CORS já está configurado no backend para aceitar requisições nativas vindas dessa porta.*
+```bash
+docker compose up --build -d || docker compose up --build
+```
+
+_Dica: Se quiser acompanhar os logs em tempo real, remova a flag `-d` ou use `docker compose logs -f`._
+
+- **Frontend:** Estará disponível em `http://localhost:80`.
+- **Backend:** Estará rodando e respondendo em `http://localhost:8080` (O Frontend se comunica via NGINX com ele de forma transparente no `/api`).
+- **Banco de Dados (PostgreSQL):** Rodando na porta `5433` da sua máquina local (mapeada para a porta interna 5432 do container).
+
+Para parar todos os serviços, execute:
+
+```bash
+docker compose down
+```
+
+### 3. Desenvolvimento Manual (Opcional)
+
+Caso queira rodar os serviços separados para desenvolvimento e ver alterações em tempo real sem rebuildar o docker:
+
+1. Suba apenas o banco de dados: `docker compose up db -d`
+2. **Backend:** Entre na pasta `backend` e rode `./mvnw spring-boot:run`
+3. **Frontend:** Entre na pasta `frontend`, instale as dependências com `npm install` e rode com `npm run dev` (o app abrirá em `http://localhost:5173`)
 
 ---
 
 ## 🔒 Regras de Segurança (O Porteiro)
+
 O backend possui um filtro rigoroso (`JwtAuthenticationFilter`).
+
 - Qualquer requisição REST feita para o sistema sem o token retornará bloqueio (Código 403 Forbidden).
 - Rota livre para testes (Autenticação): Faça um `POST` para `http://localhost:8080/api/auth/login` enviando os dados de entrada para extrair seu token gerado pelo `JwtUtil`.
 
 ## 🤝 Como contribuir
+
 1. Lembre-se que as dependências não se misturam. Qualquer pacote Node é restrito ao `/frontend`, enquanto pacotes Maven ficam restritos ao `pom.xml` do `/backend`.
 2. O CSS deve seguir os padrões já definidos no Tailwind v4. Não adicione arquivos de estilo avulsos a não ser que estritamente necessário.

@@ -87,12 +87,14 @@ const questions = [
 export function DiagnosticQuiz({
   onResultsRequested,
 }: {
-  onResultsRequested: () => void;
+  onResultsRequested: (answers: string[]) => void;
 }) {
   const [current, setCurrent] = useState(0);
   const [complete, setComplete] = useState(false);
+  const [answers, setAnswers] = useState<string[]>([]);
 
-  const answer = () => {
+  const answer = (selectedOption: string) => {
+    setAnswers((prev) => [...prev, selectedOption]);
     if (current < questions.length - 1) {
       setCurrent((value) => value + 1);
     } else {
@@ -121,7 +123,7 @@ export function DiagnosticQuiz({
               Entre para ver os cursos e vagas indicados para você.
             </p>
             <div className="mt-7">
-              <Button onClick={onResultsRequested}>Ver meus resultados</Button>
+              <Button onClick={() => onResultsRequested(answers)}>Ver meus resultados</Button>
             </div>
           </div>
         ) : (
@@ -142,7 +144,7 @@ export function DiagnosticQuiz({
               {question.opts.map((option) => (
                 <button
                   key={option}
-                  onClick={answer}
+                  onClick={() => answer(option)}
                   className="block w-full text-left p-[14px_18px] rounded-[12px] border-2 border-solid border-[#e7e0d0] bg-paper font-sans font-semibold text-[15px] cursor-pointer hover:border-brand-yellow hover:bg-[#fdf6e3]"
                 >
                   {option}

@@ -1,50 +1,43 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { RibbonStrip } from "../components/ui/RibbonStrip";
-import { DetailsModal } from "../components/ui/DetailsModal";
 import { AuthModal } from "../components/ui/AuthModal";
 import { Header } from "../components/sections/Header";
 import { Hero } from "../components/sections/Hero";
 import { Stats } from "../components/sections/Stats";
 import { HowItWorks } from "../components/sections/HowItWorks";
 import { DiagnosticQuiz } from "../features/diagnostic/DiagnosticQuiz";
-import { CoursesList } from "../components/sections/CoursesList";
-import { JobsList } from "../components/sections/JobsList";
 import { Footer } from "../components/sections/Footer";
-import {
-  getCourses,
-  getJobs,
-  type Course,
-  type Job,
-} from "../services/catalog";
 import { useAuth } from "../features/auth/useAuth";
+import { submitDiagnostic } from "../services/api";
 import { OpportunityTeaser } from "../components/sections/OpportunityTeaser";
 
 export function Home() {
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
-  const [showResults, setShowResults] = useState(false);
-
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [coursesError, setCoursesError] = useState("");
-  const [jobsError, setJobsError] = useState("");
-  const [loadingCourses, setLoadingCourses] = useState(false);
-  const [loadingJobs, setLoadingJobs] = useState(false);
-  const [selected, setSelected] = useState<Course | Job | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "register">("register");
   const [authContext, setAuthContext] = useState<"diagnostic" | "default">(
     "default",
   );
+  const [pendingAnswers, setPendingAnswers] = useState<string[] | null>(null);
 
-  const requestResults = () => {
+  const requestResults = async (answers: string[]) => {
     if (!isAuthenticated) {
+      setPendingAnswers(answers);
       setAuthMode("register");
       setAuthContext("diagnostic");
       setShowAuthModal(true);
     } else {
-      setShowResults(true);
+      try {
+        const response = await submitDiagnostic(answers);
+        navigate("/dashboard", { state: { profile: response.perfil } });
+      } catch (err) {
+        console.error("Falha ao salvar diagnóstico", err);
+        navigate("/dashboard");
+      }
     }
   };
 
@@ -60,31 +53,21 @@ export function Home() {
     setShowAuthModal(true);
   };
 
-  const handleAuthSuccess = () => {
+  const handleAuthSuccess = async () => {
     setShowAuthModal(false);
-    setShowResults(true);
+    if (pendingAnswers) {
+      try {
+        const response = await submitDiagnostic(pendingAnswers);
+        setPendingAnswers(null);
+        navigate("/dashboard", { state: { profile: response.perfil } });
+      } catch (err) {
+        console.error("Falha ao salvar diagnóstico pós-login", err);
+        navigate("/dashboard");
+      }
+    } else {
+      navigate("/dashboard");
+    }
   };
-
-  useEffect(() => {
-    if (!isAuthenticated || !showResults) return;
-    setLoadingCourses(true);
-    setLoadingJobs(true);
-    getCourses()
-      .then(setCourses)
-      .catch((error: Error) => setCoursesError(error.message))
-      .finally(() => setLoadingCourses(false));
-    getJobs()
-      .then(setJobs)
-      .catch((error: Error) => setJobsError(error.message))
-      .finally(() => setLoadingJobs(false));
-    window.setTimeout(
-      () =>
-        document
-          .getElementById("cursos")
-          ?.scrollIntoView({ behavior: "smooth" }),
-      0,
-    );
-  }, [isAuthenticated, showResults]);
 
   return (
     <>
@@ -97,23 +80,11 @@ export function Home() {
         <Hero />
         <Stats />
         <HowItWorks />
-        <DiagnosticQuiz onResultsRequested={requestResults} />
-        {showResults && isAuthenticated && (
-          <>
-            <CoursesList
-              courses={courses}
-              loading={loadingCourses}
-              error={coursesError}
-              onSelect={setSelected}
-            />
-            <JobsList
-              jobs={jobs}
-              loading={loadingJobs}
-              error={jobsError}
-              onSelect={setSelected}
-            />
-          </>
-        )}
+        <section id="diagnostico" className="py-20 px-[6vw]">
+          <div className="max-w-4xl mx-auto">
+            <DiagnosticQuiz onResultsRequested={requestResults} />
+          </div>
+        </section>
         <OpportunityTeaser
           isAuthenticated={isAuthenticated}
           onUnlock={handleOpenRegister}
@@ -128,11 +99,6 @@ export function Home() {
           onSuccess={handleAuthSuccess}
         />
       )}
-      <DetailsModal
-        item={selected}
-        type={selected && "workload" in selected ? "course" : "job"}
-        onClose={() => setSelected(null)}
-      />
     </>
   );
 }
