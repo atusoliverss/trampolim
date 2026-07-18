@@ -24,6 +24,9 @@ public class Usuario {
     @Column(nullable = false)
     private String senha;
 
+    @Column(nullable = false)
+    private String nome;
+
     // Role enum ou string para simplificar
     private String role;
 }
