@@ -41,7 +41,7 @@ export function AuthModal({ onClose, onSuccess, initialMode = "register", contex
 
         // Fluxo de Cadastro
         const registerResponse = await fetch(
-          "http://localhost:8080/api/auth/cadastro",
+          "/api/auth/cadastro",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -57,7 +57,7 @@ export function AuthModal({ onClose, onSuccess, initialMode = "register", contex
 
       // Login Automático (no caso do cadastro) ou fluxo de Login normal
       const loginResponse = await fetch(
-        "http://localhost:8080/api/auth/login",
+        "/api/auth/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

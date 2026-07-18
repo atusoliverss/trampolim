@@ -38,34 +38,21 @@ O backend exige um banco de dados rodando para iniciar corretamente. Usamos o Do
 
 ### 2. Rodar o Backend (API Spring Boot)
 Com o banco rodando, podemos iniciar a API. 
-*(Ainda no terminal, dentro da pasta `backend/`)*
+### 2. Rodar Tudo com Docker Compose (Recomendado)
+Para iniciar o Banco de Dados, o Backend e o Frontend de uma vez só, abra o terminal na **pasta raiz do projeto** e execute:
 
-- Se você estiver no **Linux/macOS**:
-  ```bash
-  ./mvnw spring-boot:run
-  ```
-- Se você estiver no **Windows**:
-  ```bash
-  mvnw.cmd spring-boot:run
-  ```
-*O backend estará rodando em `http://localhost:8080`. Todas as rotas (exceto `/api/auth/login` e `/api/auth/cadastro`) estão protegidas e exigem um Token JWT no cabeçalho `Authorization`.*
+```bash
+docker compose up --build -d
+```
 
-### 3. Rodar o Frontend (React / Vite)
-Por fim, abra **uma nova aba/janela no terminal** e inicie a interface do usuário.
+- **Frontend:** Estará disponível em `http://localhost:80`.
+- **Backend:** Estará rodando e respondendo em `http://localhost:8080` (O Frontend se comunica via NGINX com ele de forma transparente no `/api`).
+- **Banco de Dados (PostgreSQL):** Rodando na porta `5433` (mapeada para a porta interna 5432).
 
-1. Navegue até a pasta do frontend:
-   ```bash
-   cd frontend
-   ```
-2. Instale as dependências na primeira vez:
-   ```bash
-   npm install
-   ```
-3. Inicie o servidor de desenvolvimento:
-   ```bash
-   npm run dev
-   ```
-*O frontend abrirá automaticamente no seu navegador em `http://localhost:5173`. O CORS já está configurado no backend para aceitar requisições nativas vindas dessa porta.*
+Para parar todos os serviços, execute:
+```bash
+docker compose down
+```
 
 ---
 

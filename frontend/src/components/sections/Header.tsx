@@ -1,4 +1,5 @@
 import { useAuth } from "../../features/auth/useAuth";
+import { Link } from "react-router-dom";
 
 interface HeaderProps {
   onOpenLogin?: () => void;
@@ -27,12 +28,12 @@ export function Header({ onOpenLogin, onOpenRegister }: HeaderProps) {
           Diagnóstico
         </a>
         {isAuthenticated && (
-          <a
-            href="#cursos"
+          <Link
+            to="/dashboard"
             className="text-ink no-underline font-semibold text-[14px] ml-7"
           >
-            Cursos
-          </a>
+            Dashboard
+          </Link>
         )}
         <a
           href="#vagas"

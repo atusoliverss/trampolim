@@ -22,10 +22,21 @@ public class RecomendacaoService {
     private final DiagnosticoRepository diagnosticoRepository;
 
     public List<VagaRecomendadaDTO> recomendarVagasParaUsuario(Long usuarioId) {
-        Diagnostico diagnostico = diagnosticoRepository.findByUsuarioId(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Diagnóstico não encontrado para o usuário: " + usuarioId));
+        Diagnostico diagnostico = diagnosticoRepository.findByUsuarioId(usuarioId).orElse(null);
 
         List<Vaga> todasVagas = vagaRepository.findAll();
+        
+        if (diagnostico == null) {
+            // Se o usuário não tem diagnóstico, retorna as últimas vagas como default
+            return todasVagas.stream()
+                    .limit(5)
+                    .map(vaga -> VagaRecomendadaDTO.builder()
+                            .vaga(VagaResponseDTO.fromEntity(vaga))
+                            .matchScore(0.0)
+                            .build())
+                    .collect(Collectors.toList());
+        }
+
         List<VagaRecomendadaDTO> vagasRecomendadas = new ArrayList<>();
 
         for (Vaga vaga : todasVagas) {

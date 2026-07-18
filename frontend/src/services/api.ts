@@ -37,3 +37,11 @@ export async function request<T>(url: string, options: RequestInit & { authentic
     throw new ApiError('Não foi possível conectar ao serviço. Verifique sua conexão e tente novamente.');
   } finally { window.clearTimeout(timeout); }
 }
+
+export async function submitDiagnostic(alternativasMarcadas: string[]): Promise<{ perfil: string, mensagem: string }> {
+  return request<{ perfil: string, mensagem: string }>('/api/diagnostico', {
+    method: 'POST',
+    body: JSON.stringify({ alternativasMarcadas }),
+    authenticated: true
+  });
+}
