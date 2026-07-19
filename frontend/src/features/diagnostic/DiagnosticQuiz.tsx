@@ -1,10 +1,9 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Button } from "../../components/ui/Button";
 import {
   ChevronRight,
   Brain,
   CheckCircle2,
-  Sparkles,
 } from "lucide-react";
 
 type Area =
@@ -276,7 +275,7 @@ const questions: Question[] = [
 export function DiagnosticQuiz({
   onResultsRequested,
 }: {
-  onResultsRequested: () => void;
+  onResultsRequested: (answers: string[]) => void;
 }) {
   const [current, setCurrent] = useState(0);
 
@@ -291,20 +290,20 @@ export function DiagnosticQuiz({
 
   const complete = current >= questions.length;
 
-  const profile = useMemo(() => {
-    return Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
-  }, [scores]);
-
   function answer(option: Option) {
-    const updated = { ...scores };
+  const updated = { ...scores };
 
-    Object.entries(option.score).forEach(([k, v]) => {
-      updated[k as Area] += v ?? 0;
-    });
+  Object.entries(option.score).forEach(([k, v]) => {
+    updated[k as Area] += v ?? 0;
+  });
 
-    setScores(updated);
-    setCurrent((c) => c + 1);
-  }
+  setAnswers((prev) => [...prev, option.text]);
+
+  setScores(updated);
+  setCurrent((c) => c + 1);
+}
+
+  const [answers, setAnswers] = useState<string[]>([]);
 
   if (complete) {
   const ranking = Object.entries(scores).sort((a, b) => b[1] - a[1]);
@@ -472,14 +471,10 @@ export function DiagnosticQuiz({
               </div>
 
               <div className="mt-10">
-
-                <Button onClick={onResultsRequested}>
-
-                  Ver vagas recomendadas
-
-                </Button>
-
-              </div>
+  <Button onClick={() => onResultsRequested(answers)}>
+    Ver vagas recomendadas
+  </Button>
+</div>
 
             </div>
 

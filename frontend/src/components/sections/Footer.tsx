@@ -1,5 +1,4 @@
 import {
-  ArrowRight,
   GraduationCap,
   BriefcaseBusiness,
   Mail,
