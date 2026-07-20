@@ -1,108 +1,286 @@
-import { LockIcon, BriefcaseIcon, GraduationCapIcon } from "lucide-react";
+import {
+  LockIcon,
+  BriefcaseIcon,
+  GraduationCapIcon,
+  ArrowRightIcon,
+  SparklesIcon,
+  MapPinIcon,
+  WalletIcon,
+} from "lucide-react";
 
 interface OpportunityTeaserProps {
   isAuthenticated: boolean;
   onUnlock: () => void;
 }
 
-const mockJobs = [
-  { id: 1, title: "Jovem Aprendiz Administrativo", company: "Ambev", location: "São Paulo, SP", salary: "R$ 900" },
-  { id: 2, title: "Auxiliar de Logística", company: "Mercado Livre", location: "Osasco, SP", salary: "R$ 1.800" },
-  { id: 3, title: "Atendimento ao Cliente", company: "NuBank", location: "Remoto", salary: "R$ 2.100" },
+const jobs = [
+  {
+    title: "Operador de Caixa",
+    company: "Mercado Bom Preço",
+    location: "Irecê • BA",
+    salary: "R$ 1.820",
+    match: "94%",
+  },
+  {
+    title: "Atendente",
+    company: "Farmácia Extra Forte",
+    location: "Irecê • BA",
+    salary: "R$ 1.680",
+    match: "91%",
+  },
+  {
+    title: "Auxiliar Administrativo",
+    company: "Grupo Líder",
+    location: "Irecê • BA",
+    salary: "R$ 2.150",
+    match: "88%",
+  },
 ];
 
-const mockCourses = [
-  { id: 1, title: "Gestão de Tempo e Produtividade", provider: "Sebrae", duration: "10h", level: "Iniciante" },
-  { id: 2, title: "Informática Básica", provider: "Fundação Bradesco", duration: "20h", level: "Iniciante" },
-  { id: 3, title: "Comunicação Efetiva", provider: "Senai", duration: "15h", level: "Intermediário" },
+const courses = [
+  {
+    title: "Excel Básico",
+    provider: "Fundação Bradesco",
+    duration: "20 horas",
+  },
+  {
+    title: "Atendimento ao Cliente",
+    provider: "SEBRAE",
+    duration: "15 horas",
+  },
+  {
+    title: "Operador de Caixa",
+    provider: "SENAI",
+    duration: "40 horas",
+  },
 ];
 
-export function OpportunityTeaser({ isAuthenticated, onUnlock }: OpportunityTeaserProps) {
+export function OpportunityTeaser({
+  isAuthenticated,
+  onUnlock,
+}: OpportunityTeaserProps) {
   return (
-    <section className="py-20 px-[6vw] bg-gray-50 relative">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-serif font-bold text-ink mb-4">
-            Mural de Oportunidades
+    <section id="vagas" className="relative py-28 bg-[#F7F3EA] overflow-hidden">
+
+      <div className="absolute inset-0 pointer-events-none">
+
+        <div className="absolute -top-20 right-0 w-96 h-96 rounded-full bg-yellow-200/30 blur-3xl"/>
+
+        <div className="absolute bottom-0 left-0 w-[420px] h-[420px] rounded-full bg-red-200/20 blur-3xl"/>
+
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-6">
+
+        <div className="text-center max-w-3xl mx-auto">
+
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-yellow/20 text-brand-red font-bold text-sm uppercase tracking-wider">
+
+            <SparklesIcon size={16}/>
+
+            Oportunidades Inteligentes
+
+          </span>
+
+          <h2 className="font-serif text-5xl font-black text-ink mt-6">
+
+            Depois do diagnóstico,
+
+            <br />
+
+            mostramos exatamente isso.
+
           </h2>
-          <p className="text-lg text-[#3a4560] max-w-2xl mx-auto">
-            Mais de 50 vagas de emprego e cursos de capacitação esperando por você na sua região.
+
+          <p className="mt-6 text-lg leading-8 text-slate-600">
+
+            Nossa IA cruza suas competências com vagas abertas e cursos
+            gratuitos para acelerar sua contratação.
+
           </p>
+
         </div>
 
-        <div className="relative">
-          {/* Container com blur se não estiver logado */}
-          <div className={`grid md:grid-cols-2 gap-12 transition-all duration-500 ${!isAuthenticated ? 'blur-[6px] pointer-events-none select-none opacity-60' : ''}`}>
-            
-            {/* Vagas */}
-            <div id="vagas">
+        <div className="relative mt-20">
+
+          <div
+            className={`grid lg:grid-cols-2 gap-10 transition duration-500 ${
+              !isAuthenticated
+                ? "blur-md opacity-50 pointer-events-none"
+                : ""
+            }`}
+          >
+
+            {/* VAGAS */}
+
+            <div className="rounded-3xl bg-white border border-slate-200 shadow-xl p-8">
+
               <div className="flex items-center gap-3 mb-8">
-                <BriefcaseIcon className="w-6 h-6 text-brand-red" />
-                <h3 className="text-2xl font-bold text-ink">Vagas em Destaque</h3>
+
+                <BriefcaseIcon className="text-brand-red"/>
+
+                <h3 className="font-bold text-2xl">
+                  Vagas Compatíveis
+                </h3>
+
               </div>
-              <div className="flex flex-col gap-4">
-                {mockJobs.map(job => (
-                  <div key={job.id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center hover:shadow-md transition-shadow">
-                    <div>
-                      <h4 className="font-bold text-lg text-ink">{job.title}</h4>
-                      <p className="text-gray-500 text-sm mt-1">{job.company} • {job.location}</p>
+
+              <div className="space-y-5">
+
+                {jobs.map((job) => (
+
+                  <div
+                    key={job.title}
+                    className="rounded-2xl border border-slate-200 p-5 hover:border-brand-yellow hover:shadow-lg transition"
+                  >
+
+                    <div className="flex justify-between">
+
+                      <div>
+
+                        <h4 className="font-bold text-lg">
+                          {job.title}
+                        </h4>
+
+                        <p className="text-slate-500 mt-1">
+                          {job.company}
+                        </p>
+
+                      </div>
+
+                      <span className="bg-green-100 text-green-700 font-bold rounded-full px-3 py-1 text-sm">
+                        {job.match} Match
+                      </span>
+
                     </div>
-                    <div className="text-right">
-                      <span className="bg-green-100 text-green-700 font-bold px-3 py-1 rounded-full text-sm">{job.salary}</span>
+
+                    <div className="flex justify-between mt-5 text-sm text-slate-500">
+
+                      <div className="flex items-center gap-2">
+
+                        <MapPinIcon size={15}/>
+
+                        {job.location}
+
+                      </div>
+
+                      <div className="flex items-center gap-2">
+
+                        <WalletIcon size={15}/>
+
+                        {job.salary}
+
+                      </div>
+
                     </div>
+
                   </div>
+
                 ))}
+
               </div>
+
             </div>
 
-            {/* Cursos */}
-            <div id="cursos">
+            {/* CURSOS */}
+
+            <div className="rounded-3xl bg-white border border-slate-200 shadow-xl p-8">
+
               <div className="flex items-center gap-3 mb-8">
-                <GraduationCapIcon className="w-6 h-6 text-brand-yellow" />
-                <h3 className="text-2xl font-bold text-ink">Cursos Recomendados</h3>
+
+                <GraduationCapIcon className="text-brand-yellow"/>
+
+                <h3 className="font-bold text-2xl">
+                  Próximos Cursos
+                </h3>
+
               </div>
-              <div className="flex flex-col gap-4">
-                {mockCourses.map(course => (
-                  <div key={course.id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center hover:shadow-md transition-shadow">
-                    <div>
-                      <h4 className="font-bold text-lg text-ink">{course.title}</h4>
-                      <p className="text-gray-500 text-sm mt-1">{course.provider}</p>
+
+              <div className="space-y-5">
+
+                {courses.map((course) => (
+
+                  <div
+                    key={course.title}
+                    className="rounded-2xl border border-slate-200 p-5 hover:border-brand-green hover:shadow-lg transition"
+                  >
+
+                    <div className="flex justify-between">
+
+                      <div>
+
+                        <h4 className="font-bold text-lg">
+                          {course.title}
+                        </h4>
+
+                        <p className="text-slate-500 mt-2">
+                          {course.provider}
+                        </p>
+
+                      </div>
+
+                      <span className="rounded-full bg-brand-green/10 text-brand-green px-3 py-1 font-bold text-sm">
+                        {course.duration}
+                      </span>
+
                     </div>
-                    <div className="text-right flex flex-col items-end gap-2">
-                      <span className="bg-blue-100 text-blue-700 font-semibold px-3 py-1 rounded-full text-xs">{course.level}</span>
-                      <span className="text-gray-400 text-xs font-medium">{course.duration}</span>
-                    </div>
+
                   </div>
+
                 ))}
+
               </div>
+
             </div>
 
           </div>
 
-          {/* Overlay Paywall */}
           {!isAuthenticated && (
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center">
-              <div className="bg-white/90 backdrop-blur-sm p-10 rounded-3xl shadow-xl border border-gray-100 max-w-md transform transition-transform hover:scale-105">
-                <div className="w-16 h-16 bg-brand-yellow rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
-                  <LockIcon className="w-8 h-8 text-ink" />
+
+            <div className="absolute inset-0 flex items-center justify-center">
+
+              <div className="rounded-[32px] bg-white p-10 shadow-2xl border border-slate-200 max-w-lg text-center">
+
+                <div className="w-20 h-20 rounded-full bg-brand-yellow flex items-center justify-center mx-auto">
+
+                  <LockIcon size={34} className="text-ink"/>
+
                 </div>
-                <h3 className="text-2xl font-bold text-ink mb-4 font-serif">
-                  Acesso Exclusivo
+
+                <h3 className="font-serif text-4xl font-black mt-8">
+
+                  Desbloqueie seu futuro
+
                 </h3>
-                <p className="text-gray-600 mb-8 leading-relaxed">
-                  Crie sua conta gratuitamente agora mesmo para revelar as vagas, se candidatar e acessar os cursos gratuitos mapeados para o seu perfil.
+
+                <p className="mt-5 leading-8 text-slate-600">
+
+                  Faça seu cadastro gratuito para visualizar todas as vagas,
+                  cursos personalizados e recomendações geradas pela IA.
+
                 </p>
+
                 <button
                   onClick={onUnlock}
-                  className="w-full bg-brand-red text-white font-bold text-lg py-4 px-8 rounded-full shadow-lg hover:bg-red-600 hover:shadow-xl transition-all"
+                  className="mt-8 w-full rounded-full bg-brand-red hover:bg-red-700 transition text-white py-4 font-bold flex items-center justify-center gap-3"
                 >
-                  Criar Conta Grátis
+
+                  Criar Conta Gratuitamente
+
+                  <ArrowRightIcon size={18}/>
+
                 </button>
+
               </div>
+
             </div>
+
           )}
+
         </div>
+
       </div>
+
     </section>
   );
 }

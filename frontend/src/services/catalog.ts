@@ -10,8 +10,8 @@ const text = (data: JsonRecord, keys: string[]) =>
         typeof value === "string" || typeof value === "number",
     )
     ?.toString() ?? "";
-const list = (value: unknown) =>
-  Array.isArray(value)
+const list = (value: unknown) => {
+  const arr = Array.isArray(value)
     ? value.map(String)
     : typeof value === "string"
       ? value
@@ -19,6 +19,8 @@ const list = (value: unknown) =>
           .map((item) => item.trim())
           .filter(Boolean)
       : [];
+  return Array.from(new Set(arr));
+};
 const collection = (payload: unknown, keys: string[]) => {
   if (Array.isArray(payload)) return payload as JsonRecord[];
   const record = payload as JsonRecord;
@@ -86,27 +88,38 @@ export async function getCourses(): Promise<Course[]> {
 
 export async function getJobs(): Promise<Job[]> {
   const payload = await request<unknown>(apiConfig.jobsUrl);
-  return collection(payload, [
+  const rawJobs = collection(payload, [
     "data",
     "vagas",
     "jobs",
     "content",
     "results",
-  ]).map((raw, index) => ({
-    id: text(raw, ["id", "_id", "codigo"]) || String(index),
-    title: text(raw, ["cargo", "titulo", "title", "nome"]),
-    company: text(raw, ["empresa", "company", "nomeEmpresa"]),
-    description: text(raw, ["descricao", "description", "resumo"]),
-    location: text(raw, ["localizacao", "location", "cidade"]),
-    modality: text(raw, ["modalidade", "modality", "tipo"]),
-    salary: text(raw, ["salario", "salary", "faixaSalarial"]) || undefined,
-    requirements: list(raw.requisitos ?? raw.requirements),
-    benefits: list(raw.beneficios ?? raw.benefits),
-    whatsapp:
-      text(raw, ["whatsapp", "telefoneContato", "telefone"]) || undefined,
-    applicationUrl:
-      text(raw, ["linkCandidatura", "applicationUrl", "link", "url"]) ||
-      undefined,
-    raw,
-  }));
+  ]).map((raw, index) => {
+    const vagaData = (raw.vaga as JsonRecord) || raw;
+    return {
+      id: text(vagaData, ["id", "_id", "codigo"]) || String(index),
+      title: text(vagaData, ["cargo", "titulo", "title", "nome"]),
+      company: text(vagaData, ["empresa", "company", "nomeEmpresa"]),
+      description: text(vagaData, ["descricao", "description", "resumo"]),
+      location: text(vagaData, ["localizacao", "location", "cidade", "local"]),
+      modality: text(vagaData, ["modalidade", "modality", "tipo", "periodo"]),
+      salary: text(vagaData, ["salario", "salary", "faixaSalarial"]) || undefined,
+      requirements: list(vagaData.requisitos ?? vagaData.requirements),
+      benefits: list(vagaData.beneficios ?? vagaData.benefits),
+      whatsapp:
+        text(vagaData, ["whatsapp", "telefoneContato", "telefone", "contatos"]) || undefined,
+      applicationUrl:
+        text(vagaData, ["linkCandidatura", "applicationUrl", "link", "url"]) ||
+        undefined,
+      raw: vagaData,
+    };
+  });
+  const uniqueJobsMap = new Map<string, Job>();
+  for (const job of rawJobs) {
+    const key = `${job.title}-${job.company}`;
+    if (!uniqueJobsMap.has(key)) {
+      uniqueJobsMap.set(key, job);
+    }
+  }
+  return Array.from(uniqueJobsMap.values());
 }

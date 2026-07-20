@@ -1,14 +1,142 @@
-import type { Job } from '../../services/catalog';
+import {
+  BriefcaseBusiness,
+  MapPin,
+  Wallet,
+  ArrowRight,
+  BadgeCheck,
+} from "lucide-react";
 
-interface JobsListProps { jobs: Job[]; loading: boolean; error?: string; onSelect: (job: Job) => void; }
+import type { Job } from "../../services/catalog";
 
-export function JobsList({ jobs, loading, error, onSelect }: JobsListProps) {
-  return <section className="py-[80px] px-[6vw]" id="vagas">
-    <div className="text-[13px] font-extrabold tracking-[1.5px] uppercase text-brand-red mb-3">Vagas parceiras</div>
-    <h2 className="text-[clamp(26px,3.5vw,38px)] max-w-[640px] mb-6">Empresas da região com vaga aberta agora.</h2>
-    {error && <p role="alert" className="mb-5 rounded-xl bg-[#fbe7e8] p-4 text-brand-red">{error}</p>}
-    {loading ? <p className="text-[#5a6480]">Carregando vagas...</p> : jobs.length === 0 ? <p className="text-[#5a6480]">Nenhuma vaga disponível no momento.</p> : <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-5">
-      {jobs.map((job) => <button key={job.id} onClick={() => onSelect(job)} className="text-left bg-brand-white rounded-[16px] p-6 border border-solid border-[#e7e0d0] cursor-pointer hover:border-brand-yellow transition-colors"><div className="text-[12px] font-extrabold text-brand-blue uppercase">{job.company || 'Empresa parceira'}</div><h3 className="text-[18px] my-2 font-sans font-bold">{job.title || 'Vaga'}</h3><p className="text-[13px] text-[#5a6480] mb-3.5">{[job.location, job.modality].filter(Boolean).join(' · ') || 'Localização a confirmar'}</p>{job.salary && <span className="inline-block bg-[#e9f5ee] text-brand-green font-extrabold text-[12px] px-3 py-[5px] rounded-full">{job.salary}</span>}</button>)}
-    </div>}
-  </section>;
+interface JobsListProps {
+  jobs: Job[];
+  loading: boolean;
+  error?: string;
+  onSelect: (job: Job) => void;
+}
+
+export function JobsList({
+  jobs,
+  loading,
+  error,
+  onSelect,
+}: JobsListProps) {
+
+  if (loading)
+    return (
+      <p className="text-slate-500">
+        Carregando vagas...
+      </p>
+    );
+
+  if (error)
+    return (
+      <div className="rounded-2xl bg-red-50 border border-red-200 p-5 text-red-700">
+        {error}
+      </div>
+    );
+
+  if (!jobs.length)
+    return (
+      <p className="text-slate-500">
+        Nenhuma vaga encontrada.
+      </p>
+    );
+
+  return (
+
+    <div className="space-y-6">
+
+      {jobs.map((job)=>(
+
+        <button
+          key={job.id}
+          onClick={()=>onSelect(job)}
+          className="group w-full rounded-3xl border border-slate-200 bg-[#FAFAF9] hover:bg-white hover:border-brand-red hover:shadow-xl transition-all duration-300 text-left p-7"
+        >
+
+          <div className="flex justify-between">
+
+            <div>
+
+              <span className="flex items-center gap-2 uppercase text-brand-blue text-sm font-bold">
+
+                <BriefcaseBusiness size={16}/>
+
+                {job.company || "Empresa"}
+
+              </span>
+
+              <h3 className="text-2xl font-bold mt-5">
+
+                {job.title}
+
+              </h3>
+
+            </div>
+
+            <span className="rounded-full bg-brand-green/10 text-brand-green px-4 py-2 font-bold h-fit">
+
+              Match IA
+
+            </span>
+
+          </div>
+
+          <div className="flex flex-wrap gap-6 mt-7 text-slate-600">
+
+            <span className="flex items-center gap-2">
+
+              <MapPin size={16}/>
+
+              {[job.location, job.modality]
+                .filter(Boolean)
+                .join(" · ") || "Local"}
+
+            </span>
+
+            {job.salary && (
+
+              <span className="flex items-center gap-2">
+
+                <Wallet size={16}/>
+
+                {job.salary}
+
+              </span>
+
+            )}
+
+          </div>
+
+          <div className="flex justify-between items-center mt-8">
+
+            <div className="flex items-center gap-2 text-brand-green">
+
+              <BadgeCheck size={18}/>
+
+              Compatível com seu perfil
+
+            </div>
+
+            <span className="flex items-center gap-2 font-bold text-brand-red">
+
+              Ver detalhes
+
+              <ArrowRight
+                size={18}
+                className="group-hover:translate-x-1 transition"
+              />
+
+            </span>
+
+          </div>
+
+        </button>
+
+      ))}
+
+    </div>
+
+  );
 }
