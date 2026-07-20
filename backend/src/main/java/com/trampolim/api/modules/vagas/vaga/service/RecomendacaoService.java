@@ -24,7 +24,7 @@ public class RecomendacaoService {
     public List<VagaRecomendadaDTO> recomendarVagasParaUsuario(Long usuarioId) {
         Diagnostico diagnostico = diagnosticoRepository.findByUsuarioId(usuarioId).orElse(null);
 
-        List<Vaga> todasVagas = vagaRepository.findAll();
+        List<Vaga> todasVagas = vagaRepository.findAll().stream().distinct().collect(Collectors.toList());
         
         if (diagnostico == null) {
             // Se o usuário não tem diagnóstico, retorna as últimas vagas como default

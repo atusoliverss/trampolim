@@ -29,11 +29,15 @@ export function AuthModal({ onClose, onSuccess, initialMode = "register", contex
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
+    document.body.style.overflow = "hidden";
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
     window.addEventListener("keydown", handleEscape);
-    return () => window.removeEventListener("keydown", handleEscape);
+    return () => {
+      document.body.style.overflow = "unset";
+      window.removeEventListener("keydown", handleEscape);
+    };
   }, [onClose]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -99,9 +103,9 @@ export function AuthModal({ onClose, onSuccess, initialMode = "register", contex
       aria-modal="true"
       aria-labelledby="auth-modal-title"
       onMouseDown={(event) => event.stopPropagation()}
-      className="relative w-full max-w-6xl overflow-hidden rounded-[32px] bg-white shadow-[0_45px_120px_rgba(15,23,42,.35)]"
+      className="relative w-full max-w-5xl overflow-hidden rounded-[32px] bg-white shadow-[0_45px_120px_rgba(15,23,42,.35)]"
     >
-      <div className="grid min-h-[720px] lg:grid-cols-[1fr_540px]">
+      <div className="grid min-h-[600px] lg:grid-cols-[1fr_480px]">
 
         {/* ========================================= */}
         {/* LADO ESQUERDO                             */}
@@ -119,7 +123,7 @@ export function AuthModal({ onClose, onSuccess, initialMode = "register", contex
 
           </div>
 
-          <div className="relative flex h-full flex-col justify-between p-14 text-white">
+          <div className="relative flex h-full flex-col justify-between p-10 text-white">
 
             <div>
 
@@ -129,7 +133,7 @@ export function AuthModal({ onClose, onSuccess, initialMode = "register", contex
 
               </span>
 
-              <h1 className="mt-10 font-serif text-6xl font-black leading-[1.05]">
+              <h1 className="mt-8 font-serif text-5xl font-black leading-[1.05]">
 
                 Descubra
                 <br />
@@ -216,7 +220,7 @@ export function AuthModal({ onClose, onSuccess, initialMode = "register", contex
         {/* LADO DIREITO                              */}
         {/* ========================================= */}
 
-        <section className="relative flex flex-col justify-center p-10 lg:px-14 lg:py-12">
+        <section className="relative flex flex-col justify-center p-8 lg:px-10 lg:py-8">
 
           <button
             onClick={onClose}
@@ -236,14 +240,14 @@ export function AuthModal({ onClose, onSuccess, initialMode = "register", contex
 
           <h2
             id="auth-modal-title"
-            className="mt-7 font-serif text-5xl font-black leading-tight text-slate-900"
+            className="mt-5 font-serif text-3xl font-black leading-tight text-slate-900"
           >
             {context === "diagnostic"
               ? "Veja seus resultados personalizados"
               : "Bem-vindo ao Trampolim"}
           </h2>
 
-          <p className="mt-6 max-w-md text-[17px] leading-8 text-slate-600">
+          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-slate-600">
 
             {context === "diagnostic"
               ? "Crie sua conta gratuitamente para desbloquear recomendações inteligentes de cursos e vagas compatíveis com seu perfil."
@@ -251,7 +255,7 @@ export function AuthModal({ onClose, onSuccess, initialMode = "register", contex
 
           </p>
 
-          <div className="mt-10 flex rounded-full bg-slate-100 p-1">
+          <div className="mt-6 flex rounded-full bg-slate-100 p-1">
 
             <button
               type="button"
@@ -281,7 +285,7 @@ export function AuthModal({ onClose, onSuccess, initialMode = "register", contex
 
           <form
             onSubmit={handleSubmit}
-            className="mt-10 space-y-5"
+            className="mt-6 space-y-4"
           >
           {error && (
   <div className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">

@@ -10,9 +10,10 @@ import {
 interface HeaderProps {
   onOpenLogin?: () => void;
   onOpenRegister?: () => void;
+  variant?: "default" | "dashboard";
 }
 
-export function Header({ onOpenLogin, onOpenRegister }: HeaderProps) {
+export function Header({ onOpenLogin, onOpenRegister, variant = "default" }: HeaderProps) {
   const { isAuthenticated, logout } = useAuth();
   const [scrolled, setScrolled] = useState(false);
 const [mobileOpen, setMobileOpen] = useState(false);
@@ -64,38 +65,59 @@ useEffect(() => {
 
       <nav className="hidden lg:flex items-center gap-10">
 
-      <a
-      href="#como-funciona"
-      className="font-semibold text-slate-700 hover:text-brand-red transition"
-      >
-      Como funciona
-      </a>
+      {variant === "default" ? (
+        <>
+          <a
+          href="/#como-funciona"
+          className="font-semibold text-slate-700 hover:text-brand-red transition"
+          >
+          Como funciona
+          </a>
 
-      <a
-      href="#diagnostico"
-      className="font-semibold text-slate-700 hover:text-brand-red transition"
-      >
-      Diagnóstico
-      </a>
+          <a
+          href="/#diagnostico"
+          className="font-semibold text-slate-700 hover:text-brand-red transition"
+          >
+          Diagnóstico
+          </a>
 
-      <a
-      href="#vagas"
-      className="font-semibold text-slate-700 hover:text-brand-red transition"
-      >
-      Vagas
-      </a>
+          <a
+          href="/#vagas"
+          className="font-semibold text-slate-700 hover:text-brand-red transition"
+          >
+          Vagas
+          </a>
 
-      {isAuthenticated && (
-
-      <Link
-      to="/dashboard"
-      className="font-semibold text-slate-700 hover:text-brand-red transition"
-      >
-
-      Dashboard
-
-      </Link>
-
+          {isAuthenticated && (
+            <Link
+            to="/dashboard"
+            className="font-semibold text-slate-700 hover:text-brand-red transition"
+            >
+            Dashboard
+            </Link>
+          )}
+        </>
+      ) : (
+        <>
+          <a
+          href="#resultados"
+          className="font-semibold text-slate-700 hover:text-brand-red transition"
+          >
+          Resultados
+          </a>
+          <a
+          href="#cursos"
+          className="font-semibold text-slate-700 hover:text-brand-red transition"
+          >
+          Cursos
+          </a>
+          <a
+          href="#vagas"
+          className="font-semibold text-slate-700 hover:text-brand-red transition"
+          >
+          Vagas
+          </a>
+        </>
       )}
 
       </nav>
@@ -164,32 +186,35 @@ useEffect(() => {
 
       <div className="flex flex-col p-6 gap-5">
 
-      <a href="#como-funciona">
-
-      Como funciona
-
-      </a>
-
-      <a href="#diagnostico">
-
-      Diagnóstico
-
-      </a>
-
-      <a href="#vagas">
-
-      Vagas
-
-      </a>
-
-      {isAuthenticated && (
-
-      <Link to="/dashboard">
-
-      Dashboard
-
-      </Link>
-
+      {variant === "default" ? (
+        <>
+          <a href="/#como-funciona">
+          Como funciona
+          </a>
+          <a href="/#diagnostico">
+          Diagnóstico
+          </a>
+          <a href="/#vagas">
+          Vagas
+          </a>
+          {isAuthenticated && (
+          <Link to="/dashboard">
+          Dashboard
+          </Link>
+          )}
+        </>
+      ) : (
+        <>
+          <a href="#resultados">
+          Resultados
+          </a>
+          <a href="#cursos">
+          Cursos
+          </a>
+          <a href="#vagas">
+          Vagas
+          </a>
+        </>
       )}
 
       {isAuthenticated ? (

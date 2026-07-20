@@ -45,7 +45,7 @@ export function Dashboard() {
 
   return (
   <>
-    <Header />
+    <Header variant="dashboard" />
 
     <main className="min-h-screen pt-20 bg-[#F7F3EA]">
 
@@ -167,7 +167,7 @@ export function Dashboard() {
 
         {userProfile && (
 
-          <section className="mb-14">
+          <section id="resultados" className="mb-14">
 
             <ResultsDashboard
               profile={userProfile}
@@ -180,13 +180,13 @@ export function Dashboard() {
 
         {/* GRID */}
 
-        <section className="grid xl:grid-cols-5 gap-8">
+        <section className="flex flex-col gap-8">
 
           {/* CURSOS */}
 
-          <div className="xl:col-span-2">
+          <div>
 
-            <div className="bg-white rounded-[32px] border shadow-xl p-8">
+            <div id="cursos" className="bg-white rounded-[32px] border shadow-xl p-8">
 
               <div className="flex items-center justify-between mb-8">
 
@@ -221,9 +221,9 @@ export function Dashboard() {
 
           {/* VAGAS */}
 
-          <div className="xl:col-span-3">
+          <div>
 
-            <div className="bg-white rounded-[32px] border shadow-xl p-8">
+            <div id="vagas" className="bg-white rounded-[32px] border shadow-xl p-8">
 
               <div className="flex items-center justify-between mb-8">
 

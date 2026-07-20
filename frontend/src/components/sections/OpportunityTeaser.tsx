@@ -60,7 +60,7 @@ export function OpportunityTeaser({
   onUnlock,
 }: OpportunityTeaserProps) {
   return (
-    <section className="relative py-28 bg-[#F7F3EA] overflow-hidden">
+    <section id="vagas" className="relative py-28 bg-[#F7F3EA] overflow-hidden">
 
       <div className="absolute inset-0 pointer-events-none">
 
