@@ -85,21 +85,29 @@ public class RecomendacaoService {
         if (requisitosVaga.isEmpty()) {
             // Se a vaga não exige nada, tem 100% de match nesse quesito?
             scoreTotal += 50.0;
-        } else if (!habilidadesUser.isEmpty()) {
-            // Normalizar para case insensitive
-            List<String> userSkillsLower = habilidadesUser.stream()
-                    .map(String::toLowerCase)
-                    .map(String::trim)
-                    .toList();
+        } else {
+            // Se o perfil bate diretamente com um requisito (ex: Requisito = "Logistica", Perfil = "Logistica")
+            boolean hasProfileMatch = diagnostico.getPerfil() != null &&
+                    requisitosVaga.stream().anyMatch(req -> req.trim().equalsIgnoreCase(diagnostico.getPerfil().trim()));
+            
+            if (hasProfileMatch) {
+                scoreTotal += 50.0;
+            } else if (!habilidadesUser.isEmpty()) {
+                // Normalizar para case insensitive
+                List<String> userSkillsLower = habilidadesUser.stream()
+                        .map(String::toLowerCase)
+                        .map(String::trim)
+                        .toList();
 
-            long countMatch = requisitosVaga.stream()
-                    .map(String::toLowerCase)
-                    .map(String::trim)
-                    .filter(userSkillsLower::contains)
-                    .count();
+                long countMatch = requisitosVaga.stream()
+                        .map(String::toLowerCase)
+                        .map(String::trim)
+                        .filter(userSkillsLower::contains)
+                        .count();
 
-            double percentualRequisitos = (double) countMatch / requisitosVaga.size();
-            scoreTotal += (percentualRequisitos * 50.0);
+                double percentualRequisitos = (double) countMatch / requisitosVaga.size();
+                scoreTotal += (percentualRequisitos * 50.0);
+            }
         }
 
         // Arredondar para duas casas decimais

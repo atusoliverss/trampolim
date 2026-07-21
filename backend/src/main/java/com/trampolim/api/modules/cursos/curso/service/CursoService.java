@@ -27,11 +27,11 @@ public class CursoService {
         }
 
         Diagnostico diagnostico = diagnosticoRepository.findByUsuarioId(usuario.getId()).orElse(null);
-        if (diagnostico == null || diagnostico.getHabilidades() == null || diagnostico.getHabilidades().isEmpty()) {
+        if (diagnostico == null || diagnostico.getPerfil() == null || diagnostico.getPerfil().isBlank()) {
             return getDefaultCursos();
         }
 
-        String categoriaPerfil = determinarCategoriaPerfil(diagnostico.getHabilidades());
+        String categoriaPerfil = diagnostico.getPerfil();
         
         List<Curso> recomendados = cursoRepository.findByCategoriaIgnoreCase(categoriaPerfil);
         
@@ -43,19 +43,7 @@ public class CursoService {
         return recomendados.stream().limit(3).collect(Collectors.toList());
     }
 
-    private String determinarCategoriaPerfil(List<String> habilidades) {
-        String habsConcatenadas = String.join(" ", habilidades).toLowerCase();
-        
-        if (habsConcatenadas.contains("vendas") || habsConcatenadas.contains("negociação") || habsConcatenadas.contains("comércio")) {
-            return "Vendas";
-        } else if (habsConcatenadas.contains("atendimento") || habsConcatenadas.contains("comunicação") || habsConcatenadas.contains("público")) {
-            return "Atendimento";
-        } else if (habsConcatenadas.contains("tecnologia") || habsConcatenadas.contains("computador") || habsConcatenadas.contains("programação")) {
-            return "Tecnologia";
-        }
-        
-        return "Geral";
-    }
+
 
     private List<Curso> getDefaultCursos() {
         return cursoRepository.findAll().stream().limit(3).collect(Collectors.toList());

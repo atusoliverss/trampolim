@@ -30,12 +30,13 @@ public class DiagnosticoController {
         var usuario = usuarioOptional.get();
 
         // Lógica simples de processamento do perfil baseada nas respostas
-        String perfil = determinarPerfil(dto);
+        String perfil = dto.perfil() != null && !dto.perfil().isBlank() ? dto.perfil() : determinarPerfil(dto);
 
         Diagnostico diagnostico = new Diagnostico();
         diagnostico.setLocalizacao("Remoto"); // Preenchimento default
         diagnostico.setDisponibilidadeTempo("INTEGRAL"); // Preenchimento default
         diagnostico.setHabilidades(dto.alternativasMarcadas());
+        diagnostico.setPerfil(perfil);
         diagnostico.setUsuario(usuario);
 
         diagnosticoRepository.save(diagnostico);

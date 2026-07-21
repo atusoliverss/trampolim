@@ -22,17 +22,17 @@ export function Home() {
   const [authContext, setAuthContext] = useState<"diagnostic" | "default">(
     "default",
   );
-  const [pendingAnswers, setPendingAnswers] = useState<string[] | null>(null);
+  const [pendingDiagnostic, setPendingDiagnostic] = useState<{ answers: string[]; perfil: string } | null>(null);
 
-  const requestResults = async (answers: string[]) => {
+  const requestResults = async (answers: string[], perfil: string) => {
     if (!isAuthenticated) {
-      setPendingAnswers(answers);
+      setPendingDiagnostic({ answers, perfil });
       setAuthMode("register");
       setAuthContext("diagnostic");
       setShowAuthModal(true);
     } else {
       try {
-        const response = await submitDiagnostic(answers);
+        const response = await submitDiagnostic(answers, perfil);
         navigate("/dashboard", { state: { profile: response.perfil } });
       } catch (err) {
         console.error("Falha ao salvar diagnóstico", err);
@@ -55,10 +55,10 @@ export function Home() {
 
   const handleAuthSuccess = async () => {
     setShowAuthModal(false);
-    if (pendingAnswers) {
+    if (pendingDiagnostic) {
       try {
-        const response = await submitDiagnostic(pendingAnswers);
-        setPendingAnswers(null);
+        const response = await submitDiagnostic(pendingDiagnostic.answers, pendingDiagnostic.perfil);
+        setPendingDiagnostic(null);
         navigate("/dashboard", { state: { profile: response.perfil } });
       } catch (err) {
         console.error("Falha ao salvar diagnóstico pós-login", err);

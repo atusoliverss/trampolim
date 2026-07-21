@@ -275,7 +275,7 @@ const questions: Question[] = [
 export function DiagnosticQuiz({
   onResultsRequested,
 }: {
-  onResultsRequested: (answers: string[]) => void;
+  onResultsRequested: (answers: string[], perfil: string) => void;
 }) {
   const [current, setCurrent] = useState(0);
 
@@ -471,7 +471,7 @@ export function DiagnosticQuiz({
               </div>
 
               <div className="mt-10">
-  <Button onClick={() => onResultsRequested(answers)}>
+  <Button onClick={() => onResultsRequested(answers, ranking[0][0])}>
     Ver vagas recomendadas
   </Button>
 </div>

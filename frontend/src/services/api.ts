@@ -38,10 +38,10 @@ export async function request<T>(url: string, options: RequestInit & { authentic
   } finally { window.clearTimeout(timeout); }
 }
 
-export async function submitDiagnostic(alternativasMarcadas: string[]): Promise<{ perfil: string, mensagem: string }> {
+export async function submitDiagnostic(alternativasMarcadas: string[], perfil: string): Promise<{ perfil: string, mensagem: string }> {
   return request<{ perfil: string, mensagem: string }>('/api/diagnostico', {
     method: 'POST',
-    body: JSON.stringify({ alternativasMarcadas }),
+    body: JSON.stringify({ alternativasMarcadas, perfil }),
     authenticated: true
   });
 }

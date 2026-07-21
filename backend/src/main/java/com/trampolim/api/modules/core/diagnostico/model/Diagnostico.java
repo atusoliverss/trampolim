@@ -34,4 +34,6 @@ public class Diagnostico {
     @Column(name = "habilidade")
     private List<String> habilidades;
 
+    private String perfil;
+
 }
